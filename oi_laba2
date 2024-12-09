@@ -1,0 +1,89 @@
+#!/bin/bash
+
+if [ ! -f "contacts.txt" ]; 
+then
+	touch contacts.txt
+fi
+
+add_contact() {
+	echo "Vvedite imya kontakta:"
+		read name
+
+	echo "Vvedite nomer telephona kontakta:"
+		read phone
+
+	echo "Vvedite email address kontakta:"
+		read email
+
+	name=$(printf '%q' "$name")
+	phone=$(printf '%q' "$phone")
+	email=$(printf '%q' "$email")
+
+	echo "$name,$phone,$email" >> contacts.txt
+
+main_menu
+}
+
+
+delete_contact() {
+	echo "Enter imya or nomer kontakta, kotoriy hotite udalit' >_<:"
+		read search_term
+
+	search_term=$(printf '%q' "$search_term")
+
+	result=$(grep "$search_term" contacts.txt)
+
+	if [[ -z "$result" ]]; then
+		echo "Kontakt ne nayden!"
+	else
+
+		sed -i "/$search_term/d" contacts.txt
+		echo "Kontakt uspeshno udalen."
+	fi
+
+main_menu
+}
+
+search_contact() {
+	echo "Vvedite imya or nomer kontakta, kotoriy hotite naity:"
+		read search_term
+
+	search_term=$(printf '%q' "$search_term")
+
+	result=$(grep "$search_term" contacts.txt)
+
+	if [[ -z "$result" ]];
+	then
+		echo "Kontakt ne nayiden!"
+	else
+		echo "Dannie kontakta: $result"
+	fi
+
+main_menu
+}
+
+main_menu() {
+	echo "Chego izvolite?"
+	echo "1. Dobavit' kontakt"
+	echo "2. Udalit' kontakt"
+	echo "3. Naity kontakt"
+	echo "4. Vihod"
+		read choice
+
+case $choice in
+1)
+	add_contact ;;
+2)
+	delete_contact ;;
+3)
+	search_contact ;;
+4)
+	exit 0 ;;
+*)
+	echo "Neverniy vibor! -_-" ;
+	main_menu ;;
+esac
+}
+
+main_menu
+
